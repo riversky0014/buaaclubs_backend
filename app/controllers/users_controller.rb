@@ -2,8 +2,17 @@ class UsersController < ApplicationController
  # before_action :set_user, only: [:show, :edit, :update, :destroy]
   skip_before_filter :verify_authenticity_token
   skip_before_action :require_club_login
-  skip_before_action :require_user_login, only: [:register, :login]
+  skip_before_action :require_user_login, only: [:register, :login, :checkuid]
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+
+  def checkuid
+     @user = User.find_by stu_num: params[:uid]
+     if @user.nil?
+        render :json => {txt:'uid available' } ,status: 200
+     else
+        render :json => {txt:'uid not available'},status: 404
+     end
+  end
 
   # POST /api/register
   def register
@@ -15,10 +24,13 @@ class UsersController < ApplicationController
     @user.stu_num = params[:uid]
     @user.phone_num = params[:phone_num]
     @user.password = params[:passwd]
+	@user.email = params[:email]
+	@user.user_head = "http://7xob9u.com1.z0.glb.clouddn.com/defaultHead.jpg"
 #    puts @user.password
     if @user.save
+      UserMailer.welcome_email(@user).deliver_now
       @user.log_num = rand(10000000)
-      render :json => {:name => @user.name, :uid => @user.stu_num, :token => Digest::MD5.hexdigest("#{@user.stu_num.to_s + @user.log_num.to_s}")}
+      render :json => {:name => @user.name, :uid => @user.stu_num, :token => Digest::MD5.hexdigest("#{@user.stu_num.to_s + @user.log_num.to_s}"), :user_head =>  @user.user_head}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -30,7 +42,7 @@ class UsersController < ApplicationController
    
     @user = User.find_by stu_num: params[:uid]
     if !@user.nil? and @user.password == params[:passwd]
-      render :json => {:name => @user.name, :uid => @user.stu_num, :token => Digest::MD5.hexdigest("#{@user.stu_num.to_s + @user.log_num.to_s}")}
+      render :json => {:name => @user.name, :uid => @user.stu_num, :token => Digest::MD5.hexdigest("#{@user.stu_num.to_s + @user.log_num.to_s}"), :user_head => @user.user_head}
     else
       render :json =>  {txt: 'user login failed'}, status: 401
     end
@@ -119,6 +131,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:stu_num, :name, :password, :phone_num)
+      params.require(:user).permit(:stu_num, :name, :password, :phone_num, :user_head)
     end
 end

@@ -5,7 +5,7 @@ class ClubsControllerTest < ActionController::TestCase
     @club = clubs(:one)
   end
   test "should login club" do
-       post:login, {:uid: 'lingfengshe',passwd: '123456'}
+       post:login, {uid: 'lingfengshe',passwd: '123456'}
        assert_response :success
   end
   test "should getabstracts club" do

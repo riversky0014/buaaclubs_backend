@@ -13,7 +13,11 @@ class ArticlesController < ApplicationController
        render text: 'Article not exist', status: 404 
     end
     suc = false
+    puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7"
     puts request.body.string
+    puts JSON.parse(request.body.string)
+    puts  @users_id["uids"]
+    puts "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
     @users_id = JSON.parse(request.body.string)
     puts  @users_id["uids"]
     @users_id["uids"].each{|temp_id|
@@ -48,7 +52,7 @@ class ArticlesController < ApplicationController
      else
       
     s = []
-    art.users.each{|a| s<<{:uid => a.stu_num,name: a.name,phone_num: a.phone_num,time: Note.where("article_id = ? AND user_id = ?",params[:article_id].to_i,a.id).take.created_at,content: Note.where("article_id = ? AND user_id = ?",params[:article_id].to_i,a.id).take.content}}
+    art.users.each{|a| s<<{:uid => a.stu_num,name: a.name,phone_num: a.phone_num,email: a.email,time: Note.where("article_id = ? AND user_id = ?",params[:article_id].to_i,a.id).take.created_at,content: Note.where("article_id = ? AND user_id = ?",params[:article_id].to_i,a.id).take.content}}
     end    
     respond_to do |format|
         if (state == 200)
@@ -85,7 +89,7 @@ class ArticlesController < ApplicationController
        format.html { render :json => {:txt => "Not Record"} ,:status => 404}
        end
     else
-       p.each{|t| a<<{:article_id => t.id,:article_title => t.title,:article_abstract => t.abstract} }
+       p.each{|t| a<<{:article_id => t.id,:article_title => t.title,:article_abstract => t.abstract, :head_url => t.club.head_url} }
        respond_to do |format|
          format.html { render :json=>{:txt => a}.to_json }
        end
@@ -107,7 +111,7 @@ class ArticlesController < ApplicationController
      @detail.content = ""
    end
     respond_to do |format|
-         format.html { render :json => {:title => @detail.title,:content => @detail.content}.to_json }
+         format.html { render :json => {:title => @detail.title,:content => @detail.content, :head_url => @detail.club.head_url}.to_json }
          end
   end
 

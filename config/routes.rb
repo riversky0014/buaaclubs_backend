@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  post '/api/clubs/sendmessage' => 'clubs#sendmessage'
+  post '/api/clubs/sendemail' => 'clubs#sendemail'
+  get '/api/users/register/check/:uid' => 'user#checkuid'
   post '/api/register' => 'users#register'
   post '/api/clubs/login' => 'clubs#login'
   post '/api/users/login' => 'users#login'

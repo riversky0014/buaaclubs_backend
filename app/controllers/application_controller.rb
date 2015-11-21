@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
 
   # 验证用户账户登录信息
   def require_user_login
-    puts "------------------------"
-    puts request.headers["uid"]
-    puts request.headers["token"]
+#    puts "------------------------"
+ #   puts request.headers["uid"]
+  #  puts request.headers["token"]
     
-    puts "------------------------"
+   # puts "------------------------"
     @user  = User.find_by stu_num: request.headers["uid"]
     if @user.nil? or  request.headers["token"] != Digest::MD5.hexdigest("#{@user.stu_num + @user.log_num.to_s}") then render text: 'Invalid User', status: 401
     end
@@ -21,11 +21,11 @@ class ApplicationController < ActionController::Base
 
   # 验证社团账户登录信息
   def require_club_login
-  puts "------------------------"
-    puts request.headers["uid"]
-    puts request.headers["token"]
+ # puts "------------------------"
+  #  puts request.headers["uid"]
+   # puts request.headers["token"]
 
-    puts "------------------------"
+    #puts "------------------------"
 
     @club = Club.find_by club_account: request.headers["uid"]
     puts "######################33"

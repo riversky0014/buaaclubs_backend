@@ -6,9 +6,11 @@ one:
   password: fushuai
   phone_num: 13810484720
   log_num: 1234
+  email: 1111111111111@qq.com
 two:
   stu_num: 13061189
   name: 傻
   password: shaerzi
   phone_num: 18329384620
   log_num: 1234
+  email: 2222222222222@qq.com

@@ -4,14 +4,15 @@ class ArticlesControllerTest < ActionController::TestCase
   setup do
     @article = articles(:one)
   end
-  test "should cutlist article" do 
-    @request.headers["uid"] = "lingfengshe"
-    @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
-    a = []
-    a << '13061196'
-    post :cutlist,{article_id: '980190962',uids: {uids: a}.to_json} 
-    assert_response :success      
-  end
+#  test "should cutlist article" do 
+ #   @request.headers["uid"] = "lingfengshe"
+  #  @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
+  #  @request.body << '{article_id:980190962,{uids:[13061196]}}'
+  #  a = []
+  #  a << '13061196'
+  #  post :cutlist,{article_id:'980190962'}
+  #  assert_response :success      
+ # end
   test "should list article" do
     
     @request.headers["uid"] = "lingfengshe"
@@ -32,22 +33,24 @@ class ArticlesControllerTest < ActionController::TestCase
     @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
     post:show,{article_id: 980190962}
   end
-  test"shoould create article"do
-     @request.headers["uid"] = "lingfengshe"
-    @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
-    assert_difference('Article.count') do
+ # test"shoould create article"do
+  #   @request.headers["uid"] = "lingfengshe"
+  #  @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
+  #  request.body<< "{'title':'asdasda','content':'asdasdasd','abstract':'ajsdhjasdhk'}"
+  #  assert_difference('Article.count') do
 
-    post:create,{title:'asdasda',content:'asdasdasd',abstract:'ajsdhjasdhka'}
-    end
-    assert_response :success
-  end
-  test"should update article"do
-      @request.headers["uid"] = "lingfengshe"
-    @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
-     post:update,{title:'asdasda',content:'asdasdasd',abstract:'ajsdhjasdhka',article_id: 980190962}
-     assert_response :success
+   # post:create,{title:'asdasda',content:'asdasdasd',abstract:'adhjasdhk'}
+   # end
+#    assert_response :success
+#  end
+ # test"should update article"do
+  #    @request.headers["uid"] = "lingfengshe"
+   #   @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")
+    #  @request.body = {title:'asdasda',content:'asdasdasd',abstract:'ajsdhjasdhk',article_id: 980190962} 
+    # post:update
+    # assert_response :success
 
-  end
+ # end
   test "should destroy article"do
       @request.headers["uid"] = "lingfengshe"
     @request.headers["token"] = Digest::MD5.hexdigest("#{"lingfengshe" + 123456.to_s}")

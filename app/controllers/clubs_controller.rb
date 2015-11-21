@@ -4,13 +4,59 @@ class ClubsController < ApplicationController
   skip_before_action :require_user_login
   skip_before_action :require_club_login, only: [:login, :getabstracts]
   before_action :set_club, only: [:show, :edit, :update, :destroy]
+  
+# POST 
+  def sendemail
+	@club = Club.where(club_account: request.headers[:uid]).take.name
+	
+	@content = JSON.parse(request.body.string)
+	
+	
+	@article = Article.find(@content["article_id"]).title
+	@information = @content["content"]
+	@content["uids"].each{|uid|
+	  
+	  
+	  @user = User.find_by stu_num: uid
+	  UserMailer.inform_email(@club,@article,@information,@user).deliver_now
+	render nothing: true, status: 200
+	}
+  end
 
+  def sendmessage
+     $LOAD_PATH.unshift(File.dirname(__FILE__)) unless $LOAD_PATH.include?(File.dirname(__FILE__))
+    require 'submail'
+   
+    mail_config = {}
+    mail_config["appid"] = "10660"
+    mail_config["appkey"] = "bdd389b857d160c4e73396dbcdd9c455"
+    mail_config["signtype"] = "md5"
+    message_config = {}
+    message_config["appid"] = "10660"
+    message_config["appkey"] = "bdd389b857d160c4e73396dbcdd9c455"
+    message_config["signtype"] = "md5"
+   
+    #message xsend
+    
+    @club = Club.find_by club_account: request.headers[:uid]
+    @content = JSON.parse(request.body.string)
+    @content["uids"].each{|uid|
+      @user = User.find_by stu_num: uid
+      messagexsend = MessageXSend.new(message_config)
+      messagexsend.add_to("#{@user.phone_num}")
+      messagexsend.set_project("DguyG")
+      messagexsend.add_var("user_name", "#{@user.name}")
+      messagexsend.add_var("club_name", "#{@club.name}")
+      messagexsend.add_var("code", "#{@content["content"]}")
+      puts messagexsend.message_xsend()}
+	render nothing: true, status: 200
+  end
   # POST /api/clubs/login
   def login
     @club = Club.find_by club_account: params[:uid]
     if !@club.nil? and params[:passwd] == @club.password
       @club.update(log_num: rand(10000000))
-      render :json => {:name => @club.name, :uid => @club.club_account, :token => Digest::MD5.hexdigest("#{@club.club_account + @club.log_num.to_s}")}
+      render :json => {:name => @club.name, :headurl => @club.head_url,:uid => @club.club_account, :token => Digest::MD5.hexdigest("#{@club.club_account + @club.log_num.to_s}")}
     else
       render nothing: true, status: 401
     end
@@ -48,7 +94,7 @@ class ClubsController < ApplicationController
           Club.where(club_account: head).exists?
           @club = Club.where(club_account: head).take
           @club.update(log_num: nil)
-          puts "@@@@@@@@@@@@@@@@@2"
+          
           respond_to do |format|
              format.html { render nothing: true,:status => 200 }
           end

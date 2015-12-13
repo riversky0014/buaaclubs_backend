@@ -3,9 +3,13 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   # 如果不需要验证，需要在控制器前注明 skip_before_action :user_or_club_login, only:[:方法]
-  before_action :require_user_login, :require_club_login
+  before_action :require_user_login, :require_club_login, :add_access_allow
 
   private
+
+  def add_access_allow
+    response.headers['Access-Control-Allow-Origin'] = "*"
+  end
 
   # 验证用户账户登录信息
   def require_user_login

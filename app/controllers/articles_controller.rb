@@ -91,6 +91,7 @@ class ArticlesController < ApplicationController
     else
        p.each{|t| a<<{:article_id => t.id,:article_title => t.title,:article_abstract => t.abstract, :head_url => t.club.head_url} }
        respond_to do |format|
+		 response.headers['Access-Control-Allow-Origin']="*"
          format.html { render :json=>{:txt => a}.to_json }
        end
     end
